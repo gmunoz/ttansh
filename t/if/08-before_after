@@ -1,0 +1,7 @@
+date
+if -x foo {
+	one
+	two
+	three
+}
+uname

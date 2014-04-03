@@ -1,0 +1,3 @@
+foreach ls {
+	df
+}

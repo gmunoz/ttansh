@@ -1,0 +1,5 @@
+foreach foobar {
+	uname -a
+	echo WOO
+	date
+}

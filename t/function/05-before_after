@@ -1,0 +1,7 @@
+date
+function foo()
+{
+	ls
+	vmstat
+}
+uname

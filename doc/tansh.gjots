@@ -1,0 +1,244 @@
+\NewEntry
+README
+
+Author: Gabe Munoz
+Date: February 29, 2004
+
+You can make the project simply by typing `make' in the source code
+directory:
+  $ make
+
+The executable is called `tansh':
+  $ ./tansh
+
+How to test the shell with `valgrind':
+  $ valgrind --tool=memcheck -v --leak-check=yes ./tansh
+\NewEntry
+INSTALL
+
+Installing this package to system-wide locations is not yet supported.
+\NewEntry
+TODO
+
+- Job control: http://www.lns.cornell.edu/public/COMP/info/bash/bashref_8.html
+               http://www.cs.uleth.ca/~holzmann/C/system/pipeforkexec.html
+- environment control (see environ(5) & susv3 - sh)
+- Make better error handlers, making sure all errno values are
+  evaluated. Make internal function calls for each system call so I can
+  call any of them from other error handlers (see man freopen for why).
+\NewEntry
+Design
+\NewFolder
+\NewEntry
+Shell
+
+Author: Gabe Munoz & Sandeep Bang
+Date: February 29, 2004
+
+1) Functionality
+2) Arbitrary length data structure
+3) Usage of `lex' for proper parsing
+4) Recursive do_command() function
+5) Internal commands
+\NewFolder
+\NewEntry
+1) Functionality
+================
+
+We are proud to say that we accomplished all 8, basic requirements for
+this lab. This includes:
+    - the internal commands `exit' and raw functionality for `cd'
+    - a command with no arguments (e.g. `ls')
+    - a command with arguments (e.g. `ls -l')
+    - a command with or without arguments executed in the background
+      (e.g. `sleep 5 &')
+    - a command with or without arguments whose output is redirected to
+      a file (e.g. `ls -l > foo')
+    - a command with or without arguments whose output is concatenated
+      to a file (e.g. `ls -l >> foo')
+    - a command with or without arguments whose input is redirected
+      from a file (e.g. `sort < foo')
+    - a command with or without arguments whose output is piped into the
+      input of another command (e.g. `last | sort')
+
+Everything can accept an arbitrary number of commands and pipes.
+\NewEntry
+2) Arbitrary length data structure
+==================================
+
+The major problem with this lab was that we were not using a data
+structure of arbitrary length. As a solution, we used a doubly-linked
+list to provide the power and flexibility of arbitrary length and ease
+of accessing the data elements.
+
+The main list we are using stores a struct `command' that stores all the
+information about a single command. In the command itself we have
+another doubly-linked list that contains the actual command and any
+flags or extra arguments that were entered into the shell. The command
+struct also contains the relevant filenames for use with the input and
+output redirectors, and boolean variables to store additional
+information for pipes, redirection, backgrounding, and internal
+commands.
+
+In case of pipes or semi-colons, we are breaking up each individual
+command and storing it individually in our main list.
+
+
+Main list       struct
+                command
+|------|
+|      |------> cmd0
+|------|
+|      |------> cmd1
+|------|
+
+So, cmd0 will contain a list of our commands ("grep", "-i", "foo"),
+individual strings for input/output filenames, and state information for
+whether the command has any pipes before and/or after the command.
+\NewEntry
+3) Usage of `lex' for proper parsing
+====================================
+
+Along with the doubly-linked list, we chose to modify our lex file to
+efficiently parse and store information about each command as it was
+scanned in by the lexical analyzer. So, we added rules for each case
+that we want to track information about (such as |, <, >, >>, etc.). So,
+our getline() function now returns us a doubly-linked list of individual
+commands along with their information, rather than a character array.
+
+We felt that the most important aspect that the doubly-linked list
+combined with more complex lex parsing is that we didn't have to perform
+any additional string parsing after lex returns our data structure.
+\NewEntry
+4) Recursive do_command() function
+==================================
+
+In order to interpret shell commands of arbitrary length, we pass our
+data structure of commands to a recursive do_command() function. This
+function handles the first element of the list (car), recurses on the
+rest of the list (cdr), and stops at a null list (base case). This
+enables us to perform arbitrary length piping.
+
+Each interpreted shell command will execute in a child of the parent. In
+the case of multiple commands related by pipes, we do not execute a fork
+within another fork, thus each child is forked directly from the parent,
+and thus within the environment from the parent. In simpler words, there
+are no grandchildren!!!
+
+Additionally, we only wait for the last child in a pipeline. So, all
+commands can process data as it is read from its input command.
+\NewEntry
+5) Internal commands
+====================
+
+We deal with two internal commands: `exit' and `cd'. We execute internal
+commands in the parent itself, not in forked children so that our
+current environment is updated.
+
+It is also setup so we can add additional internal commands in our
+internal_command() function, and not change any other code. However,
+currently, we do not allow internal commands to be part of pipelines.
+\EndFolder
+\EndFolder
+\NewEntry
+Language
+\NewFolder
+\NewEntry
+Operators
+\NewFolder
+\NewEntry
+Basic Binary Operators
+\NewFolder
+\NewEntry
+Addition: +
+\NewEntry
+Subtraction: -
+\NewEntry
+Multiplication: *
+\NewEntry
+Division: /
+\EndFolder
+\NewEntry
+Logic Operators
+\NewFolder
+\NewEntry
+Or: ||
+\NewEntry
+And: &&
+\NewEntry
+Not (negation): !
+\EndFolder
+\NewEntry
+Redirection Operators
+\NewFolder
+\NewEntry
+Pipe: |
+\NewEntry
+Ouput: >
+\NewEntry
+Input: <
+\NewEntry
+Output Concatenation: >>
+\NewEntry
+Input Here: <<
+\EndFolder
+\EndFolder
+\NewEntry
+Control Structures
+\NewFolder
+\NewEntry
+If
+
+if (boolean_expression) {
+  commands...
+}
+\NewEntry
+For
+
+for (list) {
+  commands...
+}
+\NewEntry
+While
+\NewEntry
+Switch-Case
+\EndFolder
+\NewEntry
+Data Types
+\NewFolder
+\NewEntry
+Integer
+\NewEntry
+String
+\NewEntry
+List
+\NewEntry
+Hash
+\EndFolder
+\NewEntry
+Variables
+\NewFolder
+\NewEntry
+Default Variable: $
+\NewEntry
+Basic Syntax
+
+All variables must beging with a dollar sign '$', followed by a character (a-z or A-Z, but not a number), and any number of characters and/or numbers.
+\EndFolder
+\NewEntry
+Namespaces
+\NewEntry
+Symbol Tables
+\NewEntry
+Context
+\NewEntry
+Commands and Declarations
+\NewEntry
+Functions
+\NewEntry
+Objects
+\NewEntry
+Data Strcutures
+\NewEntry
+Syntax
+\EndFolder

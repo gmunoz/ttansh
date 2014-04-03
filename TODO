@@ -1,0 +1,31 @@
+- Consider file globing, escape characters, and variable interpolation.
+- Find out WTF the ARITH_CMD symbol is supposed to be.
+- Find out what COND_START, COND_CMD, and COND_END are supposed to
+  represent.
+- Implement a symbol table using the binary tree abstract data
+  structure.
+- Move the redirect code into the cmd.{c,h} file. It is all internal to
+  commands and makes more sense from the parser.
+- The redirection parsing needs a lot of work. Still need to understand
+  what information is needed for all types of redirections, and use a
+  generic function to handle it.
+- Make each attribute stored in the global options structure a function
+  call that protects the critical section of reading/writing a variable
+  in the options structure.
+- Ensure that invalid internal commands return an error code.
+- 'err_msg' implies a newline at the end of the message that it takes.
+  All over the place I place an additional newline in the string to
+  print off. Change this so eash err_msg that I print doesn't have two
+  newlines. OR Modify err_msg to be more like printf().
+- Add better error handling to all library functions. Add returning an
+  error int and setting errno to some good value with specific meaning.
+- Mark all relevant files with their associated copyrights (I have some
+  stuff from Stevens). Mark everything else with GPL copyrights.
+- Job control:
+  http://www.lns.cornell.edu/public/COMP/info/bash/bashref_8.html
+  http://www.cs.uleth.ca/~holzmann/C/system/pipeforkexec.html
+- environment control (see environ(5) & susv3 - sh)
+- Make better error handlers, making sure all errno values are
+  evaluated. Make internal function calls for each system call so I can
+  call any of them from other error handlers (see man freopen for why).
+- Re-name errors.h to error.h. It just seems more UNIX like to do this.

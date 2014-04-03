@@ -1,0 +1,4 @@
+until foo
+{
+	cmd -l
+}

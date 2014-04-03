@@ -1,0 +1,6 @@
+for foobar {
+	uname -a
+	echo WOO
+	date
+}
+lala

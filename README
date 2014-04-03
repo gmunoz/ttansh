@@ -1,0 +1,29 @@
+Author: Gabe Munoz
+Date: February 29, 2004
+
+You can make the project simply by typing `make' in the top-level
+project directory:
+  $ make
+
+The executable is called `tansh':
+  $ ./tansh
+
+How to test the shell with `valgrind':
+  $ valgrind --tool=memcheck --show-reachable=yes -v --leak-check=yes ./tansh
+
+CURRENT TEST SEND COMMAND:
+$ send command 137.28.109.251 connect /tmp/new-rms.avi 137.28.109.251
+
+or to mppf from quasar:
+# send command 137.28.109.254 connect /home/munozga/rms.avi /tmp/new-rms.avi 137.28.109.251
+
+Format of remote commands, parsed by 'do_cmd_send()':
+send [command c0 [c1 .. cn]] [file src dest my_IP] [port port_str src] remote_IP
+
+make CFLAGS="-DNDEBUG_CMD -DNDEBUG_CMD_CD -DNDEBUG_CMD_EXIT -DNDEBUG_CMD_FILE -DNDEBUG_CMD_PORT -DNDEBUG_CMD_SEND -DNDEBUG_CMD_SET -DNDEBUG_OPTIONS -DNDEBUG_PARSER -DNDEBUG_TANSH -DNDEBUG_CRC -DNDEBUG_DSH -DNDEBUG_DSH_SEND_RECV -DNDEBUG_DSH_SERVER -DNDEBUG_RTT -DNDEBUG_WRAP_SIGNAL" distclean all
+
+make CFLAGS="-DNDEBUG_CMD -DNDEBUG_CMD_CD -DNDEBUG_CMD_EXIT -DNDEBUG_CMD_PORT -DNDEBUG_CMD_SEND -DNDEBUG_CMD_SET -DNDEBUG_OPTIONS -DNDEBUG_PARSER -DNDEBUG_TANSH" distclean all
+
+send file /home/munozga/rms.avi /tmp/new-rms.avi 137.28.109.254
+send file /home/munozga/c.pdf /tmp/c.pdf 137.28.109.254
+send file /home/munozga/net5.txt /tmp/net5.txt 137.28.109.254

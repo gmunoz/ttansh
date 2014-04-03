@@ -1,0 +1,7 @@
+cat file
+for foobar {
+	uname -a
+	echo WOO
+	date
+}
+lala

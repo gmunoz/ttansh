@@ -1,0 +1,4 @@
+while foo
+{
+	cmd -l
+}

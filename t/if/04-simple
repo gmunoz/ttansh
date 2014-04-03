@@ -1,0 +1,8 @@
+if -x foo {
+	echo foo
+	ls
+} else if -x bar {
+	date
+} else {
+	uname
+}

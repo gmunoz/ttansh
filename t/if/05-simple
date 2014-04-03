@@ -1,0 +1,10 @@
+if -x foo {
+	echo foo
+	ls
+} else if -x bar {
+	date
+} else if -x cake {
+	vmstat
+} else {
+	uname
+}
